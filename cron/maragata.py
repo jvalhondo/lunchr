@@ -83,18 +83,9 @@ class Maragata(object):
 
         menu = self.scrap_menu(r=r)
 
-        if not menu:  menu = {"fecha": "2017-04-21",
-                              "segundo_plato": ["lubina a la plancha",
-                                                "ternera encebollada",
-                                                "lac\u00f3n con patatas"],
-                              "primer_plato": ["paella",
-                                               "ensaladas",
-                                               "guisantes con jam\u00f3n"],
-                              'telefono': '91 564 44 82'
-                              }
-
-        self.slack_post_message(channel="#bots",
-                                text=self.compose_message(menu))
+        if menu:
+            self.slack_post_message(channel="#bots",
+                                    text=self.compose_message(menu))
 
 
 maragata = Maragata()
