@@ -1,0 +1,10 @@
+version: "2"
+
+services:
+  cron:
+    build: .
+    image: cron/maragata
+    container_name: cron.maragata
+    env_file:
+      - .env
+    restart: always

@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+  cron:
+     extends:
+       file: cron/services.yml
+       service: cron
