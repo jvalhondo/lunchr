@@ -84,7 +84,7 @@ class Maragata(object):
         menu = self.scrap_menu(r=r)
 
         if menu:
-            self.slack_post_message(channel="#bots",
+            self.slack_post_message(channel="#el-antitupper",
                                     text=self.compose_message(menu))
 
 
