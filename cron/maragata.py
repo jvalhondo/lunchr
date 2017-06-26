@@ -11,6 +11,7 @@ class Maragata(object):
     def __init__(self):
         self.maragata_url = 'http://www.lamaragata.com/lamaragata.asp'
         self.slack_token = os.environ['SLACK_TOKEN']
+        self.slack_channel = os.environ['SLACK_CHANNEL']
         self.sc = SlackClient(self.slack_token)
 
     def scrap_menu(self, r):
@@ -84,7 +85,7 @@ class Maragata(object):
         menu = self.scrap_menu(r=r)
 
         if menu:
-            self.slack_post_message(channel="#el-antitupper",
+            self.slack_post_message(channel=self.slack_channel,
                                     text=self.compose_message(menu))
 
 
