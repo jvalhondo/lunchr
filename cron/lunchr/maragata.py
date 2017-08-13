@@ -1,22 +1,23 @@
-import os
-import urllib.request
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
+import requests
+
 from datetime import datetime
-from random import randint
 from bs4 import BeautifulSoup
-from slackclient import SlackClient
+
+from .abstract_provider import FoodProvider
 
 
-class Maragata(object):
+class Maragata(FoodProvider):
 
-    def __init__(self):
-        self.maragata_url = 'http://www.lamaragata.com/lamaragata.asp'
-        self.slack_token = os.environ['SLACK_TOKEN']
-        self.slack_channel = os.environ['SLACK_CHANNEL']
-        self.sc = SlackClient(self.slack_token)
+    name = 'maragata'
 
-    def scrap_menu(self, r):
+    def scrap_menu(self):
+        # Get daily menu
+        r = requests.get(self.service_url)
         # init bs4 parser
-        soup = BeautifulSoup(r, "html.parser")
+        soup = BeautifulSoup(r.content, "html.parser")
         # define target table attrs
         _table_attrs = dict(align='center', border='0',
                             cellspacing='0', width='100%')
@@ -46,10 +47,7 @@ class Maragata(object):
         return dict()
 
     def compose_message(self, menu):
-        message = ""
-        emojis = [':spaghetti:', ':taco:', ':burrito:',
-                  ':ramen:', ':stew:', ':curry:',
-                  ':bento:', ':hamburger:', ':sushi:']
+        attachments = []
 
         def compose_items(data):
             _message = ""
@@ -57,12 +55,10 @@ class Maragata(object):
                 _message += '   - ' + item + '\n'
             return _message
 
-        def get_randemoji(emojis):
-            return emojis[randint(0, len(emojis)-1)]
-
         # compose 2 random emojis
-        message += get_randemoji(
-            emojis=emojis) + get_randemoji(emojis=emojis) + '\n'
+        message = self.get_randemoji(emojis=self.emojis) + \
+            self.get_randemoji(emojis=self.emojis) + \
+            ' *Menú Maragata:* \n'
         # compose 'primer plato'
         message += '*Primer Plato:* ' + '\n' + compose_items(
             menu['primer_plato'])
@@ -74,20 +70,4 @@ class Maragata(object):
         # compose 'telefono'
         message += '*Telefono:* ' + menu['telefono'] + '\n'
 
-        return message
-
-    def slack_post_message(self, channel, text):
-        self.sc.api_call("chat.postMessage", channel=channel, text=text)
-
-    def request_menu(self):
-        r = urllib.request.urlopen(self.maragata_url).read()
-
-        menu = self.scrap_menu(r=r)
-
-        if menu:
-            self.slack_post_message(channel=self.slack_channel,
-                                    text=self.compose_message(menu))
-
-
-maragata = Maragata()
-maragata.request_menu()
+        return message, attachments

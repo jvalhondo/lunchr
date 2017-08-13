@@ -1,2 +1,2 @@
-# maragata
-Slack bot: cronjob for posting Maragata lunch menu every working day
+# lunchr
+Slack bot: cronjob for posting Maragata & Nat's Lunchbox lunch menus every working day
