@@ -3,8 +3,8 @@ version: "2"
 services:
   cron:
     build: .
-    image: cron/maragata
-    container_name: cron.maragata
+    image: cron/luchr
+    container_name: cron.lunchr
     env_file:
       - .env
     restart: always
